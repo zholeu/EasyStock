@@ -2,6 +2,7 @@ package com.springeasystock.easystock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springeasystock.easystock.dto.CustomerDTO;
+import com.springeasystock.easystock.dto.OrderListDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.sql.Timestamp;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,125 +27,125 @@ public class OrderListControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    static private CustomerDTO customerDTO;
+    static private OrderListDTO orderListDTO;
 
     @BeforeAll
     static void createDTO() {
-        customerDTO = new CustomerDTO();
-        customerDTO.setName("Boris");
-        customerDTO.setSurname("Johnson");
-        customerDTO.setEmail("jojo@gmail.com");
-        customerDTO.setAddress("Yellow st., dom 13, kv 10");
+        orderListDTO = new OrderListDTO();
+        orderListDTO.setOrderStatus("Boris");
+        orderListDTO.setTotalPrice(29.90);
+        orderListDTO.setOrderDate(Timestamp.valueOf("2024-11-26 14:30:00"));
+        orderListDTO.setDeliveryDate(Timestamp.valueOf("2024-11-26 14:30:00"));
     }
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void testCreation() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(orderListDTO);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/orderlists")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse response = result.getResponse();
 
-        CustomerDTO resultDTO = objectMapper.readValue(response.getContentAsString(), CustomerDTO.class);
+        OrderListDTO resultDTO = objectMapper.readValue(response.getContentAsString(), OrderListDTO.class);
 
         assertAll(
                 () -> assertEquals(201, response.getStatus()),
-                () -> assertEquals(customerDTO.getName(), resultDTO.getName()),
-                () -> assertEquals(customerDTO.getSurname(), resultDTO.getSurname()),
-                () -> assertEquals(customerDTO.getEmail(), resultDTO.getEmail()),
-                () -> assertEquals(customerDTO.getAddress(), resultDTO.getAddress())
+                () -> assertEquals(orderListDTO.getOrderStatus(), resultDTO.getOrderStatus()),
+                () -> assertEquals(orderListDTO.getTotalPrice(), resultDTO.getTotalPrice()),
+                () -> assertEquals(orderListDTO.getOrderDate(), resultDTO.getOrderDate()),
+                () -> assertEquals(orderListDTO.getDeliveryDate(), resultDTO.getDeliveryDate())
         );
     }
 
     @Test
     void testRetrieveCustomerById() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(orderListDTO);
 
-        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/orderlists")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse createResponse = createResult.getResponse();
 
-        CustomerDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), CustomerDTO.class);
+        OrderListDTO createdOrderList = objectMapper.readValue(createResponse.getContentAsString(), OrderListDTO.class);
 
-        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/customers/" + createdCustomer.getId())
+        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/orderlists/" + createdOrderList.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse retrieveResponse = retrieveResult.getResponse();
 
-        CustomerDTO retrievedCustomer = objectMapper.readValue(retrieveResponse.getContentAsString(), CustomerDTO.class);
+        OrderListDTO retrievedOrderList = objectMapper.readValue(retrieveResponse.getContentAsString(), OrderListDTO.class);
 
         assertAll(
                 () -> assertEquals(200, retrieveResponse.getStatus()),
-                () -> assertEquals(createdCustomer.getId(), retrievedCustomer.getId()),
-                () -> assertEquals(createdCustomer.getName(), retrievedCustomer.getName()),
-                () -> assertEquals(createdCustomer.getSurname(), retrievedCustomer.getSurname()),
-                () -> assertEquals(createdCustomer.getEmail(), retrievedCustomer.getEmail()),
-                () -> assertEquals(createdCustomer.getAddress(), retrievedCustomer.getAddress())
+                () -> assertEquals(createdOrderList.getId(), retrievedOrderList.getId()),
+                () -> assertEquals(createdOrderList.getOrderStatus(), retrievedOrderList.getOrderStatus()),
+                () -> assertEquals(createdOrderList.getTotalPrice(), retrievedOrderList.getTotalPrice()),
+                () -> assertEquals(createdOrderList.getOrderDate(), retrievedOrderList.getOrderDate()),
+                () -> assertEquals(createdOrderList.getDeliveryDate(), retrievedOrderList.getDeliveryDate())
         );
     }
 
     @Test
     void testUpdateCustomer() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(orderListDTO);
 
-        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/orderlists")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse createResponse = createResult.getResponse();
-        CustomerDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), CustomerDTO.class);
+        OrderListDTO createdOrderList = objectMapper.readValue(createResponse.getContentAsString(), OrderListDTO.class);
 
-        CustomerDTO updatedCustomerDTO = new CustomerDTO();
-        updatedCustomerDTO.setName("Updated Name");
-        updatedCustomerDTO.setSurname("Updated Surname");
-        updatedCustomerDTO.setEmail("updated.email@example.com");
-        updatedCustomerDTO.setAddress("Updated Address");
+        OrderListDTO updatedOrderListDTO = new OrderListDTO();
+        updatedOrderListDTO.setOrderStatus("Updated Status");
+        updatedOrderListDTO.setTotalPrice(50.5);
+        updatedOrderListDTO.setOrderDate(Timestamp.valueOf("2024-11-26 14:30:00"));
+        updatedOrderListDTO.setDeliveryDate(Timestamp.valueOf("2024-11-26 14:30:00"));
 
-        String updateRequest = objectMapper.writeValueAsString(updatedCustomerDTO);
+        String updateRequest = objectMapper.writeValueAsString(updatedOrderListDTO);
 
-        MvcResult updateResult = mockMvc.perform(MockMvcRequestBuilders.put("/api/customers/" + createdCustomer.getId())
+        MvcResult updateResult = mockMvc.perform(MockMvcRequestBuilders.put("/api/orderlists/" + createdOrderList.getId())
                         .content(updateRequest)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse updateResponse = updateResult.getResponse();
-        CustomerDTO updatedCustomer = objectMapper.readValue(updateResponse.getContentAsString(), CustomerDTO.class);
+        OrderListDTO updatedOrderList = objectMapper.readValue(updateResponse.getContentAsString(), OrderListDTO.class);
 
         assertAll(
                 () -> assertEquals(200, updateResponse.getStatus()),
-                () -> assertEquals("Updated Name", updatedCustomer.getName()),
-                () -> assertEquals("Updated Surname", updatedCustomer.getSurname()),
-                () -> assertEquals("updated.email@example.com", updatedCustomer.getEmail()),
-                () -> assertEquals("Updated Address", updatedCustomer.getAddress())
+                () -> assertEquals("Updated Status", updatedOrderList.getOrderStatus()),
+                () -> assertEquals(50.5, updatedOrderList.getTotalPrice()),
+                () -> assertEquals(Timestamp.valueOf("2024-11-26 14:30:00"), updatedOrderList.getOrderDate()),
+                () -> assertEquals(Timestamp.valueOf("2024-11-26 14:30:00"), updatedOrderList.getDeliveryDate())
         );
     }
 
     @Test
     void testDeleteCustomer() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(orderListDTO);
 
-        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/orderlists")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse createResponse = createResult.getResponse();
-        CustomerDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), CustomerDTO.class);
+        OrderListDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), OrderListDTO.class);
 
-        MvcResult deleteResult = mockMvc.perform(MockMvcRequestBuilders.delete("/api/customers/" + createdCustomer.getId())
+        MvcResult deleteResult = mockMvc.perform(MockMvcRequestBuilders.delete("/api/orderlists/" + createdCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse deleteResponse = deleteResult.getResponse();
 
-        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/customers/" + createdCustomer.getId())
+        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/orderlists/" + createdCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse retrieveResponse = retrieveResult.getResponse();
