@@ -2,6 +2,7 @@ package com.springeasystock.easystock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springeasystock.easystock.dto.CustomerDTO;
+import com.springeasystock.easystock.dto.RoleDTO;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -24,125 +25,110 @@ public class RoleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    static private CustomerDTO customerDTO;
+    static private RoleDTO roleDTO;
 
     @BeforeAll
     static void createDTO() {
-        customerDTO = new CustomerDTO();
-        customerDTO.setName("Boris");
-        customerDTO.setSurname("Johnson");
-        customerDTO.setEmail("jojo@gmail.com");
-        customerDTO.setAddress("Yellow st., dom 13, kv 10");
+        roleDTO = new RoleDTO();
+        roleDTO.setName("Data Entry Specialist");
     }
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void testCreation() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(roleDTO);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/roles")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse response = result.getResponse();
 
-        CustomerDTO resultDTO = objectMapper.readValue(response.getContentAsString(), CustomerDTO.class);
+        RoleDTO resultDTO = objectMapper.readValue(response.getContentAsString(), RoleDTO.class);
 
         assertAll(
                 () -> assertEquals(201, response.getStatus()),
-                () -> assertEquals(customerDTO.getName(), resultDTO.getName()),
-                () -> assertEquals(customerDTO.getSurname(), resultDTO.getSurname()),
-                () -> assertEquals(customerDTO.getEmail(), resultDTO.getEmail()),
-                () -> assertEquals(customerDTO.getAddress(), resultDTO.getAddress())
+                () -> assertEquals(roleDTO.getName(), resultDTO.getName())
         );
     }
 
     @Test
     void testRetrieveCustomerById() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(roleDTO);
 
-        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/roles")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse createResponse = createResult.getResponse();
 
-        CustomerDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), CustomerDTO.class);
+        RoleDTO createdRole = objectMapper.readValue(createResponse.getContentAsString(), RoleDTO.class);
 
-        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/customers/" + createdCustomer.getId())
+        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/" + createdRole.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse retrieveResponse = retrieveResult.getResponse();
 
-        CustomerDTO retrievedCustomer = objectMapper.readValue(retrieveResponse.getContentAsString(), CustomerDTO.class);
+        RoleDTO retrievedCustomer = objectMapper.readValue(retrieveResponse.getContentAsString(), RoleDTO.class);
 
         assertAll(
                 () -> assertEquals(200, retrieveResponse.getStatus()),
-                () -> assertEquals(createdCustomer.getId(), retrievedCustomer.getId()),
-                () -> assertEquals(createdCustomer.getName(), retrievedCustomer.getName()),
-                () -> assertEquals(createdCustomer.getSurname(), retrievedCustomer.getSurname()),
-                () -> assertEquals(createdCustomer.getEmail(), retrievedCustomer.getEmail()),
-                () -> assertEquals(createdCustomer.getAddress(), retrievedCustomer.getAddress())
+                () -> assertEquals(createdRole.getId(), retrievedCustomer.getId()),
+                () -> assertEquals(createdRole.getName(), retrievedCustomer.getName())
         );
     }
 
     @Test
     void testUpdateCustomer() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(roleDTO);
 
-        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/roles")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse createResponse = createResult.getResponse();
-        CustomerDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), CustomerDTO.class);
+        RoleDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), RoleDTO.class);
 
-        CustomerDTO updatedCustomerDTO = new CustomerDTO();
-        updatedCustomerDTO.setName("Updated Name");
-        updatedCustomerDTO.setSurname("Updated Surname");
-        updatedCustomerDTO.setEmail("updated.email@example.com");
-        updatedCustomerDTO.setAddress("Updated Address");
+        RoleDTO updatedCustomerDTO = new RoleDTO();
+        updatedCustomerDTO.setName("Updated Role");
 
         String updateRequest = objectMapper.writeValueAsString(updatedCustomerDTO);
 
-        MvcResult updateResult = mockMvc.perform(MockMvcRequestBuilders.put("/api/customers/" + createdCustomer.getId())
+        MvcResult updateResult = mockMvc.perform(MockMvcRequestBuilders.put("/api/roles/" + createdCustomer.getId())
                         .content(updateRequest)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse updateResponse = updateResult.getResponse();
-        CustomerDTO updatedCustomer = objectMapper.readValue(updateResponse.getContentAsString(), CustomerDTO.class);
+        RoleDTO updatedCustomer = objectMapper.readValue(updateResponse.getContentAsString(), RoleDTO.class);
 
         assertAll(
                 () -> assertEquals(200, updateResponse.getStatus()),
-                () -> assertEquals("Updated Name", updatedCustomer.getName()),
-                () -> assertEquals("Updated Surname", updatedCustomer.getSurname()),
-                () -> assertEquals("updated.email@example.com", updatedCustomer.getEmail()),
-                () -> assertEquals("Updated Address", updatedCustomer.getAddress())
+                () -> assertEquals("Updated Role", updatedCustomer.getName())
         );
     }
 
     @Test
     void testDeleteCustomer() throws Exception {
-        String request = objectMapper.writeValueAsString(customerDTO);
+        String request = objectMapper.writeValueAsString(roleDTO);
 
-        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/customers")
+        MvcResult createResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/roles")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse createResponse = createResult.getResponse();
-        CustomerDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), CustomerDTO.class);
+        RoleDTO createdCustomer = objectMapper.readValue(createResponse.getContentAsString(), RoleDTO.class);
 
-        MvcResult deleteResult = mockMvc.perform(MockMvcRequestBuilders.delete("/api/customers/" + createdCustomer.getId())
+        MvcResult deleteResult = mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/" + createdCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse deleteResponse = deleteResult.getResponse();
 
-        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/customers/" + createdCustomer.getId())
+        MvcResult retrieveResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/" + createdCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         MockHttpServletResponse retrieveResponse = retrieveResult.getResponse();
