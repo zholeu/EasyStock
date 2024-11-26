@@ -21,5 +21,5 @@ public class EmployeeDTO {
     private String role;
     private Timestamp createdAt  = new Timestamp(System.currentTimeMillis());
     private Zone zoneId;
-    private Set<Role> roleIds; // Can be a list of role IDs
+    private Set<Role> roleIds; 
 }
