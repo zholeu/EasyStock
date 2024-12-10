@@ -1,8 +1,6 @@
 package com.springeasystock.easystock.controller;
 
-import com.springeasystock.easystock.dto.EmployeeDTO;
-import com.springeasystock.easystock.dto.ItemDTO;
-import com.springeasystock.easystock.service.EmployeeService;
+import com.springeasystock.easystock.record.ItemDTO;
 import com.springeasystock.easystock.service.ItemService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,14 +30,14 @@ public class ItemController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ItemDTO> getEmployeeById(@PathVariable("id") Integer itemId){
+    public ResponseEntity<ItemDTO> getEmployeeById(@PathVariable("id") Long itemId){
         ItemDTO savedItem = itemService.getItemById(itemId);
         return ResponseEntity.ok(savedItem);
 
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ItemDTO> updateEmployee(@PathVariable("id")Integer itemId,
+    public ResponseEntity<ItemDTO> updateEmployee(@PathVariable("id")Long itemId,
                                                       @RequestBody ItemDTO updatedItem){
         ItemDTO itemDTO = itemService.updateItem(itemId, updatedItem);
         return ResponseEntity.ok(itemDTO);
@@ -47,7 +45,7 @@ public class ItemController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable("id")Integer itemId){
+    public ResponseEntity<String> deleteEmployee(@PathVariable("id")Long itemId){
         itemService.deleteItem(itemId);
         return ResponseEntity.ok("Deleted Successfully!");
 
