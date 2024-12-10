@@ -1,10 +1,6 @@
 package com.springeasystock.easystock.controller;
 
-
-import com.springeasystock.easystock.dto.OrderListDTO;
-import com.springeasystock.easystock.dto.RoleDTO;
-import com.springeasystock.easystock.dto.WaveDTO;
-import com.springeasystock.easystock.service.OrderListService;
+import com.springeasystock.easystock.record.WaveDTO;
 import com.springeasystock.easystock.service.WaveService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,14 +29,14 @@ public class WaveController {
         return ResponseEntity.ok(waves);
     }
     @GetMapping("{id}")
-    public ResponseEntity<WaveDTO> getWaveById(@PathVariable("id") Integer waveId){
+    public ResponseEntity<WaveDTO> getWaveById(@PathVariable("id") Long waveId){
         WaveDTO waveDTO = waveService.getWaveById(waveId);
         return ResponseEntity.ok(waveDTO);
 
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<WaveDTO> updateWave(@PathVariable("id")Integer waveId,
+    public ResponseEntity<WaveDTO> updateWave(@PathVariable("id")Long waveId,
                                               @RequestBody WaveDTO updatedWave){
         WaveDTO waveDTO = waveService.updateWave(waveId, updatedWave);
         return ResponseEntity.ok(waveDTO);
@@ -48,7 +44,7 @@ public class WaveController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteWave(@PathVariable("id")Integer waveId){
+    public ResponseEntity<String> deleteWave(@PathVariable("id")Long waveId){
         waveService.deleteWave(waveId);
         return ResponseEntity.ok("Deleted Successfully!");
 
