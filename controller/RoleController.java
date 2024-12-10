@@ -1,9 +1,6 @@
 package com.springeasystock.easystock.controller;
 
-import com.springeasystock.easystock.dto.EmployeeDTO;
-import com.springeasystock.easystock.dto.OrderListDTO;
-import com.springeasystock.easystock.dto.RoleDTO;
-import com.springeasystock.easystock.service.EmployeeService;
+import com.springeasystock.easystock.record.RoleDTO;
 import com.springeasystock.easystock.service.RoleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,14 +30,14 @@ public class RoleController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<RoleDTO> getRoleById(@PathVariable("id") Integer roleId){
+    public ResponseEntity<RoleDTO> getRoleById(@PathVariable("id") Long roleId){
         RoleDTO roleDTO = roleService.getRoleById(roleId);
         return ResponseEntity.ok(roleDTO);
 
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<RoleDTO> updateRole(@PathVariable("id")Integer roleId,
+    public ResponseEntity<RoleDTO> updateRole(@PathVariable("id")Long roleId,
                                                        @RequestBody RoleDTO updatedRole){
         RoleDTO roleDTO = roleService.updateRole(roleId, updatedRole);
         return ResponseEntity.ok(roleDTO);
@@ -48,7 +45,7 @@ public class RoleController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteRole(@PathVariable("id")Integer roleId){
+    public ResponseEntity<String> deleteRole(@PathVariable("id")Long roleId){
         roleService.deleteRole(roleId);
         return ResponseEntity.ok("Deleted Successfully!");
 
